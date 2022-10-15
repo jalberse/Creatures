@@ -4,13 +4,11 @@ using UnityEngine;
 
 public class Flock : MonoBehaviour
 {
-    float speed;
     Vector3 velocity;
 
     // Start is called before the first frame update
     void Start()
     {
-        speed = Random.Range(FlockManager.FM.minSpeed, FlockManager.FM.maxSpeed);
         velocity = Vector3.zero;
     }
 
@@ -19,6 +17,7 @@ public class Flock : MonoBehaviour
     {
         this.transform.Translate(this.velocity * Time.deltaTime);
         this.velocity += this.CalculateAcceleration() * Time.deltaTime;
+        this.velocity = Vector3.ClampMagnitude(this.velocity, FlockManager.FM.maxSpeed);
     }
 
     Vector3 CalculateAcceleration()
