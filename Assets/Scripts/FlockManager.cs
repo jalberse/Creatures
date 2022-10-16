@@ -32,7 +32,7 @@ public class FlockManager : MonoBehaviour
         boids = new GameObject[numBoids];
         for(int i = 0; i < numBoids; i++)
         {
-            Vector3 pos = this.transform.position = new Vector3
+            Vector3 pos = this.transform.position + new Vector3
                 (
                 Random.Range(-boidLimits.x, boidLimits.x),
                 Random.Range(-boidLimits.x, boidLimits.x),
