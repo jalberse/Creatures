@@ -484,8 +484,8 @@ MonoBehaviour:
   numBoids: 20
   boids: []
   boidLimits: {x: 5, y: 5, z: 0}
-  minSpeed: 0.1
-  maxSpeed: 1
+  minSpeed: 1
+  maxSpeed: 5
   neighbourDistance: 10
   avoidanceFactor: 1
   centeringFactor: 1

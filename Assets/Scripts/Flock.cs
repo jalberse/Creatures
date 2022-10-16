@@ -17,7 +17,7 @@ public class Flock : MonoBehaviour
     {
         this.transform.Translate(this.velocity * Time.deltaTime);
         this.velocity += this.CalculateAcceleration() * Time.deltaTime;
-        this.velocity = Vector3.ClampMagnitude(this.velocity, FlockManager.FM.maxSpeed);
+        this.velocity = Utils.ClampMagnitude(this.velocity, FlockManager.FM.maxSpeed, FlockManager.FM.minSpeed);
     }
 
     Vector3 CalculateAcceleration()
