@@ -10,6 +10,7 @@ public class FlockManager : MonoBehaviour
     public int numBoids = 20;
     public GameObject[] boids;
     public Vector3 boidLimits = new Vector3(5, 5, 0);
+    public Sprite boidSprite;
 
     [Header ("Boid Settings")]
     [Range(0.0f, 5.0f)]
@@ -39,6 +40,7 @@ public class FlockManager : MonoBehaviour
                 0
                 );
             boids[i] = Instantiate(boidPrefab, pos, Quaternion.identity);
+            boids[i].GetComponent<SpriteRenderer>().sprite = boidSprite;
         }
         FM = this;
     }
