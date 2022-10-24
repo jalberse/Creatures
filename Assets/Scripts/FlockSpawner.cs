@@ -14,29 +14,30 @@ public class FlockSpawner : MonoBehaviour
     private string folderToWatch;
 
     // TODO this would be better implemented as an Option type, but C# doesn't have one, so roll your own.
-    private bool newFile;
-    private string newFilePath;
+    private bool newOrUpdatedFile;
+    private string pathToNewOrUpdatedFile;
 
     // Start is called before the first frame update
     void Start()
     {
-        newFile = false;
-        newFilePath = "";
+        newOrUpdatedFile = false;
+        pathToNewOrUpdatedFile = "";
 
         folderToWatch = Path.Combine(Application.dataPath, "InputImages");
         
         fileSystemWatcher = new FileSystemWatcher(folderToWatch);
         fileSystemWatcher.EnableRaisingEvents = true;
-        fileSystemWatcher.Created += new FileSystemEventHandler(FileCreated);
+        fileSystemWatcher.Created += new FileSystemEventHandler(FileCreatedOrChanged);
+        fileSystemWatcher.Changed += new FileSystemEventHandler(FileCreatedOrChanged);
         fileSystemWatcher.Filter = "*.png";
     }
 
     // Update is called once per frame
     void Update()
     {
-        if( newFile )
+        if( newOrUpdatedFile )
         {
-            Sprite sprite = IMG2Sprite.instance.LoadNewSprite(newFilePath);
+            Sprite sprite = IMG2Sprite.instance.LoadNewSprite(pathToNewOrUpdatedFile);
 
             GameObject go = new GameObject("FlockManager");
             FlockManager fm = go.AddComponent<FlockManager>();
@@ -49,12 +50,12 @@ public class FlockSpawner : MonoBehaviour
             fm.velocityMatchingFactor = 0.0f;
             fm.boidSprite = sprite;
 
-            newFile = false;
-            newFilePath = "";
+            newOrUpdatedFile = false;
+            pathToNewOrUpdatedFile = "";
         }
     }
 
-    private void FileCreated(System.Object sender, FileSystemEventArgs e)
+    private void FileCreatedOrChanged(System.Object sender, FileSystemEventArgs e)
     {
         if(e.FullPath.EndsWith(".png"))
         {
@@ -66,7 +67,7 @@ public class FlockSpawner : MonoBehaviour
     {
         Debug.Log(filePath);
         // Rather than creating the flocking manager here, set a flag to indicate the main thread should do so.
-        newFile = true;
-        newFilePath = filePath;
+        newOrUpdatedFile = true;
+        pathToNewOrUpdatedFile = filePath;
     }
 }
