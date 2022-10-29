@@ -9,7 +9,7 @@ public class FlockManager : MonoBehaviour
     public GameObject boidPrefab;
     public int numBoids = 20;
     public GameObject[] boids;
-    public Vector3 boidLimits = new Vector3(5, 5, 0);
+    public Vector3 boidLimits = new Vector3(5, 5, 5);
     public Sprite boidSprite;
 
     [Header ("Boid Settings")]
@@ -36,8 +36,8 @@ public class FlockManager : MonoBehaviour
             Vector3 pos = this.transform.position + new Vector3
                 (
                 Random.Range(-boidLimits.x, boidLimits.x),
-                Random.Range(-boidLimits.x, boidLimits.x),
-                0
+                Random.Range(-boidLimits.y, boidLimits.y),
+                Random.Range(-boidLimits.z, boidLimits.z)
                 );
             boids[i] = Instantiate(boidPrefab, pos, Quaternion.identity);
             boids[i].GetComponent<SpriteRenderer>().sprite = boidSprite;

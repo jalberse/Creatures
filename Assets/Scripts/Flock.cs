@@ -55,8 +55,6 @@ public class Flock : MonoBehaviour
             acceleration += (FlockManager.FM.transform.position - this.transform.position);
         }
 
-        // We're operating in 2D, so ensure we don't move on z.
-        acceleration.z = 0.0f;
         return acceleration;
     }
 }
