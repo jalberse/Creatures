@@ -13,15 +13,12 @@ public class FlockSpawner : MonoBehaviour
     // See https://docs.unity3d.com/ScriptReference/Application-dataPath.html for locations on other platforms.
     private string folderToWatch;
 
-    // TODO this would be better implemented as an Option type, but C# doesn't have one, so roll your own.
-    private bool newOrUpdatedFile;
-    private string pathToNewOrUpdatedFile;
+    private Queue<string> newOrUpdatedFiles;
 
     // Start is called before the first frame update
     void Start()
     {
-        newOrUpdatedFile = false;
-        pathToNewOrUpdatedFile = "";
+        newOrUpdatedFiles = new Queue<string>();
 
         folderToWatch = Path.Combine(Application.dataPath, "InputImages");
         
@@ -35,9 +32,10 @@ public class FlockSpawner : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if( newOrUpdatedFile )
+        while(newOrUpdatedFiles.Count > 0)
         {
-            Sprite sprite = IMG2Sprite.instance.LoadNewSprite(pathToNewOrUpdatedFile);
+            string newFilePath = newOrUpdatedFiles.Dequeue();
+            Sprite sprite = IMG2Sprite.instance.LoadNewSprite(newFilePath);
 
             GameObject go = new GameObject("FlockManager");
             FlockManager fm = go.AddComponent<FlockManager>();
@@ -50,9 +48,6 @@ public class FlockSpawner : MonoBehaviour
             fm.centeringFactor = 0.5f;
             fm.velocityMatchingFactor = 0.0f;
             fm.boidSprite = sprite;
-
-            newOrUpdatedFile = false;
-            pathToNewOrUpdatedFile = "";
         }
     }
 
@@ -67,8 +62,6 @@ public class FlockSpawner : MonoBehaviour
     private void ProcessFile(String filePath)
     {
         Debug.Log(filePath);
-        // Rather than creating the flocking manager here, set a flag to indicate the main thread should do so.
-        newOrUpdatedFile = true;
-        pathToNewOrUpdatedFile = filePath;
+        newOrUpdatedFiles.Enqueue(filePath);
     }
 }
