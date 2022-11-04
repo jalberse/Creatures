@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Flock : MonoBehaviour
 {
+    public float turnSpeed = .01f;
     Vector3 velocity;
 
     // Start is called before the first frame update
@@ -16,6 +17,8 @@ public class Flock : MonoBehaviour
     void Update()
     {
         this.transform.Translate(this.velocity * Time.deltaTime);
+        UnityEngine.Quaternion rotationGoal = Quaternion.LookRotation(this.velocity);
+        this.transform.rotation = Quaternion.Slerp(transform.rotation, rotationGoal, turnSpeed);
         this.velocity += this.CalculateAcceleration() * Time.deltaTime;
         this.velocity = Utils.ClampMagnitude(this.velocity, FlockManager.FM.maxSpeed, FlockManager.FM.minSpeed);
     }
