@@ -13,8 +13,8 @@ public class FlockManager : MonoBehaviour
     // The boidCards provide the additional sprites that are children of the boid,
     //   which create the 3D effect of the sprites.
     public GameObject[] boidCards;
-    public Vector3 boidSpawnLimitsMin = new Vector3(-7, 2, 0);
-    public Vector3 boidSpawnLimitsMax = new Vector3(7, 15, 16);
+    public Vector3 boidSpawnLimitsMin = new Vector3(-7, 2, -2);
+    public Vector3 boidSpawnLimitsMax = new Vector3(7, 12, 18);
     public Sprite boidSprite;
 
     [Header ("Boid Settings")]
