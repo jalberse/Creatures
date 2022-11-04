@@ -52,10 +52,11 @@ public class Flock : MonoBehaviour
         }
 
         // Apply acceleration towards the center if we've left the bounds of the simulation.
-        Bounds b = new Bounds(FlockManager.FM.transform.position, FlockManager.FM.boidLimits * 2);
+        Bounds b = new Bounds(FlockManager.FM.transform.position, new Vector3(0, 0, 0));
+        b.SetMinMax(FlockManager.FM.boidSpawnLimitsMin, FlockManager.FM.boidSpawnLimitsMax);
         if (!b.Contains(transform.position))
         {
-            acceleration += (FlockManager.FM.transform.position - this.transform.position);
+            acceleration += (b.center - this.transform.position);
         }
 
         return acceleration;

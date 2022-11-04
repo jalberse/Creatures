@@ -7,9 +7,14 @@ public class FlockManager : MonoBehaviour
     public static FlockManager FM;
 
     public GameObject boidPrefab;
-    public int numBoids = 20;
+    public GameObject boidCardPrefab;
+    public int numBoids = 4;
     public GameObject[] boids;
-    public Vector3 boidLimits = new Vector3(5, 5, 5);
+    // The boidCards provide the additional sprites that are children of the boid,
+    //   which create the 3D effect of the sprites.
+    public GameObject[] boidCards;
+    public Vector3 boidSpawnLimitsMin = new Vector3(-7, 2, 0);
+    public Vector3 boidSpawnLimitsMax = new Vector3(7, 15, 16);
     public Sprite boidSprite;
 
     [Header ("Boid Settings")]
@@ -17,7 +22,7 @@ public class FlockManager : MonoBehaviour
     public float minSpeed;
     [Range(0.0f, 5.0f)]
     public float maxSpeed;
-    [Range(1.0f, 10.0f)]
+    [Range(1.0f, 25.0f)]
     public float neighbourDistance;
     [Range(0.0f, 1.0f)]
     public float avoidanceFactor;
@@ -31,16 +36,29 @@ public class FlockManager : MonoBehaviour
     void Start()
     {
         boids = new GameObject[numBoids];
+        boidCards = new GameObject[numBoids * 3];
         for(int i = 0; i < numBoids; i++)
         {
             Vector3 pos = this.transform.position + new Vector3
                 (
-                Random.Range(-boidLimits.x, boidLimits.x),
-                Random.Range(-boidLimits.y, boidLimits.y),
-                Random.Range(-boidLimits.z, boidLimits.z)
+                Random.Range(boidSpawnLimitsMin.x, boidSpawnLimitsMax.x),
+                Random.Range(boidSpawnLimitsMin.y, boidSpawnLimitsMax.y),
+                Random.Range(boidSpawnLimitsMin.z, boidSpawnLimitsMax.z)
                 );
             boids[i] = Instantiate(boidPrefab, pos, Quaternion.identity);
             boids[i].GetComponent<SpriteRenderer>().sprite = boidSprite;
+
+            boidCards[i] = Instantiate(boidCardPrefab, pos, Quaternion.LookRotation(Vector3.left));
+            boidCards[i].transform.parent = boids[i].transform;
+            boidCards[i].GetComponent<SpriteRenderer>().sprite = boidSprite;
+
+            boidCards[i + numBoids] = Instantiate(boidCardPrefab, pos, Quaternion.LookRotation(Vector3.right));
+            boidCards[i + numBoids].transform.parent = boids[i].transform;
+            boidCards[i + numBoids].GetComponent<SpriteRenderer>().sprite = boidSprite;
+
+            boidCards[i + numBoids * 2] = Instantiate(boidCardPrefab, pos, Quaternion.LookRotation(Vector3.back));
+            boidCards[i + numBoids * 2].transform.parent = boids[i].transform;
+            boidCards[i + numBoids * 2].GetComponent<SpriteRenderer>().sprite = boidSprite;
         }
         FM = this;
     }

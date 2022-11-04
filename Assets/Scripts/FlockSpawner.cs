@@ -42,6 +42,7 @@ public class FlockSpawner : MonoBehaviour
             GameObject go = new GameObject("FlockManager");
             FlockManager fm = go.AddComponent<FlockManager>();
             fm.boidPrefab = (GameObject)Resources.Load("Prefabs/Boid");
+            fm.boidCardPrefab = (GameObject)Resources.Load("Prefabs/BoidCard");
             fm.minSpeed = 0.5f;
             fm.maxSpeed = 5.0f;
             fm.neighbourDistance = 10.0f;
