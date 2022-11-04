@@ -48,15 +48,15 @@ public class FlockManager : MonoBehaviour
             boids[i] = Instantiate(boidPrefab, pos, Quaternion.identity);
             boids[i].GetComponent<SpriteRenderer>().sprite = boidSprite;
 
-            boidCards[i] = Instantiate(boidCardPrefab, pos, Quaternion.LookRotation(Vector3.left));
+            boidCards[i] = Instantiate(boidCardPrefab, pos, Quaternion.LookRotation(Vector3.left + Vector3.up));
             boidCards[i].transform.parent = boids[i].transform;
             boidCards[i].GetComponent<SpriteRenderer>().sprite = boidSprite;
 
-            boidCards[i + numBoids] = Instantiate(boidCardPrefab, pos, Quaternion.LookRotation(Vector3.right));
+            boidCards[i + numBoids] = Instantiate(boidCardPrefab, pos, Quaternion.LookRotation(Vector3.right + Vector3.up));
             boidCards[i + numBoids].transform.parent = boids[i].transform;
             boidCards[i + numBoids].GetComponent<SpriteRenderer>().sprite = boidSprite;
 
-            boidCards[i + numBoids * 2] = Instantiate(boidCardPrefab, pos, Quaternion.LookRotation(Vector3.back));
+            boidCards[i + numBoids * 2] = Instantiate(boidCardPrefab, pos, Quaternion.LookRotation(Vector3.back + Vector3.up));
             boidCards[i + numBoids * 2].transform.parent = boids[i].transform;
             boidCards[i + numBoids * 2].GetComponent<SpriteRenderer>().sprite = boidSprite;
         }
