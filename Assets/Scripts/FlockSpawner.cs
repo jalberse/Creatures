@@ -35,7 +35,7 @@ public class FlockSpawner : MonoBehaviour
         while(newOrUpdatedFiles.Count > 0)
         {
             string newFilePath = newOrUpdatedFiles.Dequeue();
-            Sprite sprite = IMG2Sprite.instance.LoadNewSprite(newFilePath);
+            Texture2D texture = IMG2Sprite.instance.LoadTexture(newFilePath);
 
             GameObject go = new GameObject("FlockManager");
             FlockManager fm = go.AddComponent<FlockManager>();
@@ -47,7 +47,7 @@ public class FlockSpawner : MonoBehaviour
             fm.avoidanceFactor = 1.0f;
             fm.centeringFactor = 0.5f;
             fm.velocityMatchingFactor = 0.0f;
-            fm.boidSprite = sprite;
+            fm.boidTexture = texture;
         }
     }
 

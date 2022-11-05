@@ -13,7 +13,7 @@ public class FlockManager : MonoBehaviour
     public GameObject[] boidCards;
     public Vector3 boidSpawnLimitsMin = new Vector3(-7, 2, -2);
     public Vector3 boidSpawnLimitsMax = new Vector3(7, 12, 18);
-    public Sprite boidSprite;
+    public Texture2D boidTexture;
 
     [Header ("Boid Settings")]
     [Range(0.0f, 5.0f)]
@@ -34,9 +34,13 @@ public class FlockManager : MonoBehaviour
     void Start()
     {
         boids = new GameObject[numBoids];
-        boidCards = new GameObject[numBoids * 3];
+        boidCards = new GameObject[numBoids];
         for(int i = 0; i < numBoids; i++)
         {
+            // TODO because sprites will render one in front of the other rather than intersecting, we need to change to quads.
+            //  So we'll have a quad, a material that's just blank, assign that material to the quad, and apply a texture from 
+            // LoadTexture(string FilePath) to that material, and then yea.
+
             Vector3 pos = this.transform.position + new Vector3
                 (
                 Random.Range(boidSpawnLimitsMin.x, boidSpawnLimitsMax.x),
@@ -44,20 +48,14 @@ public class FlockManager : MonoBehaviour
                 Random.Range(boidSpawnLimitsMin.z, boidSpawnLimitsMax.z)
                 );
             boids[i] = Instantiate(boidPrefab, pos, Quaternion.identity);
-            boids[i].GetComponent<SpriteRenderer>().sprite = boidSprite;
+            boids[i].GetComponent<MeshRenderer>().material.mainTexture = boidTexture;
             boids[i].GetComponent<Flock>().FM = this;
 
-            boidCards[i] = Instantiate(boidCardPrefab, pos, Quaternion.LookRotation(Vector3.left + Vector3.up));
+            boidCards[i] = Instantiate(boidCardPrefab, pos, Quaternion.identity);
+            Vector3 position = boidCards[i].GetComponent<Renderer>().bounds.center;
+            boidCards[i].transform.RotateAround(position, Vector3.up, 90);
             boidCards[i].transform.parent = boids[i].transform;
-            boidCards[i].GetComponent<SpriteRenderer>().sprite = boidSprite;
-
-            boidCards[i + numBoids] = Instantiate(boidCardPrefab, pos, Quaternion.LookRotation(Vector3.right + Vector3.up));
-            boidCards[i + numBoids].transform.parent = boids[i].transform;
-            boidCards[i + numBoids].GetComponent<SpriteRenderer>().sprite = boidSprite;
-
-            boidCards[i + numBoids * 2] = Instantiate(boidCardPrefab, pos, Quaternion.LookRotation(Vector3.back + Vector3.up));
-            boidCards[i + numBoids * 2].transform.parent = boids[i].transform;
-            boidCards[i + numBoids * 2].GetComponent<SpriteRenderer>().sprite = boidSprite;
+            boidCards[i].GetComponent<MeshRenderer>().material.mainTexture = boidTexture;
         }
     }
 
