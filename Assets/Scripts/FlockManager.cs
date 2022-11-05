@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class FlockManager : MonoBehaviour
 {
-    public static FlockManager FM;
-
     public GameObject boidPrefab;
     public GameObject boidCardPrefab;
     public int numBoids = 4;
@@ -47,6 +45,7 @@ public class FlockManager : MonoBehaviour
                 );
             boids[i] = Instantiate(boidPrefab, pos, Quaternion.identity);
             boids[i].GetComponent<SpriteRenderer>().sprite = boidSprite;
+            boids[i].GetComponent<Flock>().FM = this;
 
             boidCards[i] = Instantiate(boidCardPrefab, pos, Quaternion.LookRotation(Vector3.left + Vector3.up));
             boidCards[i].transform.parent = boids[i].transform;
@@ -60,7 +59,6 @@ public class FlockManager : MonoBehaviour
             boidCards[i + numBoids * 2].transform.parent = boids[i].transform;
             boidCards[i + numBoids * 2].GetComponent<SpriteRenderer>().sprite = boidSprite;
         }
-        FM = this;
     }
 
     // Update is called once per frame

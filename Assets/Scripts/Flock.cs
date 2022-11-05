@@ -5,6 +5,7 @@ using UnityEngine;
 public class Flock : MonoBehaviour
 {
     public float turnSpeed = .01f;
+    public FlockManager FM;
     Vector3 velocity;
 
     // Start is called before the first frame update
@@ -20,12 +21,12 @@ public class Flock : MonoBehaviour
         UnityEngine.Quaternion rotationGoal = Quaternion.LookRotation(this.velocity);
         this.transform.rotation = Quaternion.Slerp(transform.rotation, rotationGoal, turnSpeed);
         this.velocity += this.CalculateAcceleration() * Time.deltaTime;
-        this.velocity = Utils.ClampMagnitude(this.velocity, FlockManager.FM.maxSpeed, FlockManager.FM.minSpeed);
+        this.velocity = Utils.ClampMagnitude(this.velocity, FM.maxSpeed, FM.minSpeed);
     }
 
     Vector3 CalculateAcceleration()
     {
-        GameObject[] boids = FlockManager.FM.boids;
+        GameObject[] boids = FM.boids;
 
         Vector3 acceleration = Vector3.zero;
         foreach(GameObject boid in boids) {
@@ -34,7 +35,7 @@ public class Flock : MonoBehaviour
                 continue;
             }
             float distance = Vector3.Distance(boid.transform.position, this.transform.position);
-            if( distance > FlockManager.FM.neighbourDistance)
+            if( distance > FM.neighbourDistance)
             {
                 continue;
             }
@@ -43,17 +44,17 @@ public class Flock : MonoBehaviour
             // Calculate the acceleration on this boid due to the other boid.
             Vector3 u = (boid.transform.position - this.transform.position).normalized;
             // Avoidance
-            acceleration += u * (float)(-1.0 * FlockManager.FM.avoidanceFactor / Mathf.Pow(distance, 2.0f));
+            acceleration += u * (float)(-1.0 * FM.avoidanceFactor / Mathf.Pow(distance, 2.0f));
             // Centering
-            acceleration += u * distance * FlockManager.FM.centeringFactor;
+            acceleration += u * distance * FM.centeringFactor;
             // Velocity Matching 
             Flock otherFlock = boid.GetComponent<Flock>();
-            acceleration += FlockManager.FM.velocityMatchingFactor * otherFlock.velocity - this.velocity;
+            acceleration += FM.velocityMatchingFactor * otherFlock.velocity - this.velocity;
         }
 
         // Apply acceleration towards the center if we've left the bounds of the simulation.
-        Bounds b = new Bounds(FlockManager.FM.transform.position, new Vector3(0, 0, 0));
-        b.SetMinMax(FlockManager.FM.boidSpawnLimitsMin, FlockManager.FM.boidSpawnLimitsMax);
+        Bounds b = new Bounds(FM.transform.position, new Vector3(0, 0, 0));
+        b.SetMinMax(FM.boidSpawnLimitsMin, FM.boidSpawnLimitsMax);
         if (!b.Contains(transform.position))
         {
             acceleration += (b.center - this.transform.position);
