@@ -34,7 +34,7 @@ public class FlockManager : MonoBehaviour
     void Start()
     {
         boids = new GameObject[numBoids];
-        boidCards = new GameObject[numBoids];
+        boidCards = new GameObject[numBoids * 3];
         for(int i = 0; i < numBoids; i++)
         {
             // TODO because sprites will render one in front of the other rather than intersecting, we need to change to quads.
@@ -56,6 +56,18 @@ public class FlockManager : MonoBehaviour
             boidCards[i].transform.RotateAround(position, Vector3.up, 90);
             boidCards[i].transform.parent = boids[i].transform;
             boidCards[i].GetComponent<MeshRenderer>().material.mainTexture = boidTexture;
+
+            boidCards[i + numBoids] = Instantiate(boidCardPrefab, pos, Quaternion.identity);
+            position = boidCards[i + numBoids].GetComponent<Renderer>().bounds.center;
+            boidCards[i + numBoids].transform.RotateAround(position, Vector3.up, 180);
+            boidCards[i + numBoids].transform.parent = boids[i].transform;
+            boidCards[i + numBoids].GetComponent<MeshRenderer>().material.mainTexture = boidTexture;
+
+            boidCards[i + numBoids * 2] = Instantiate(boidCardPrefab, pos, Quaternion.identity);
+            position = boidCards[i + numBoids * 2].GetComponent<Renderer>().bounds.center;
+            boidCards[i + numBoids * 2].transform.RotateAround(position, Vector3.up, 270);
+            boidCards[i + numBoids * 2].transform.parent = boids[i].transform;
+            boidCards[i + numBoids * 2].GetComponent<MeshRenderer>().material.mainTexture = boidTexture;
         }
     }
 
