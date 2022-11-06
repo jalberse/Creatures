@@ -4,7 +4,13 @@ using System;
 using System.IO;
 using UnityEngine;
 
-public class FlockSpawner : MonoBehaviour
+enum Creature
+{
+    Boid,
+    Snake
+}
+
+public class CreatureSpawner : MonoBehaviour
 {
     private FileSystemWatcher fileSystemWatcher;
     // Note: this value depends on which platform you are running on, so beware where you're sending images from your external tool.
@@ -15,9 +21,12 @@ public class FlockSpawner : MonoBehaviour
 
     private Queue<string> newOrUpdatedFiles;
 
+    private System.Random random;
+
     // Start is called before the first frame update
     void Start()
     {
+        random = new System.Random();
         newOrUpdatedFiles = new Queue<string>();
 
         folderToWatch = Path.Combine(Application.dataPath, "InputImages");
@@ -32,7 +41,7 @@ public class FlockSpawner : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        while(newOrUpdatedFiles.Count > 0)
+        while (newOrUpdatedFiles.Count > 0)
         {
             string newFilePath = newOrUpdatedFiles.Dequeue();
             Texture2D texture = IMG2Sprite.instance.LoadTexture(newFilePath);
@@ -41,13 +50,26 @@ public class FlockSpawner : MonoBehaviour
             FlockManager fm = go.AddComponent<FlockManager>();
             fm.boidPrefab = (GameObject)Resources.Load("Prefabs/Boid");
             fm.boidCardPrefab = (GameObject)Resources.Load("Prefabs/BoidCard");
-            fm.minSpeed = 0.5f;
+            
             fm.maxSpeed = 5.0f;
             fm.neighbourDistance = 10.0f;
             fm.avoidanceFactor = 1.0f;
             fm.centeringFactor = 0.5f;
             fm.velocityMatchingFactor = 0.0f;
             fm.boidTexture = texture;
+            var creatureTypes = Enum.GetValues(typeof(Creature));
+            var randomIndex = this.random.Next(creatureTypes.Length);
+            var creatureType = (Creature)creatureTypes.GetValue(randomIndex);
+            switch (creatureType) {
+                case Creature.Boid:
+                    fm.minSpeed = 0.5f;
+                    fm.tailLength = 0;
+                    break;
+                case Creature.Snake:
+                    fm.minSpeed = 3.0f;
+                    fm.tailLength = 20;
+                    break;
+            }
         }
     }
 

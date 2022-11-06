@@ -212,7 +212,7 @@ GameObject:
   - component: {fileID: 242390117}
   - component: {fileID: 242390116}
   m_Layer: 0
-  m_Name: FlockSpawner
+  m_Name: CreatureSpawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -230,6 +230,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5023e1f3a44599d4693a349764768ad3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  folderToWatch: 
 --- !u!4 &242390117
 Transform:
   m_ObjectHideFlags: 0

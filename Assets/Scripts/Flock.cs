@@ -4,9 +4,12 @@ using UnityEngine;
 
 public class Flock : MonoBehaviour
 {
+    public GameObject boidCardPrefab;
     public float turnSpeed = .01f;
     public FlockManager FM;
     Vector3 velocity;
+    public List<GameObject> tail;
+    public float tailSpacing = 0.05f;
 
     // Start is called before the first frame update
     void Start()
@@ -22,6 +25,25 @@ public class Flock : MonoBehaviour
         this.transform.rotation = Quaternion.Slerp(transform.rotation, rotationGoal, turnSpeed);
         this.velocity += this.CalculateAcceleration() * Time.deltaTime;
         this.velocity = Utils.ClampMagnitude(this.velocity, FM.maxSpeed, FM.minSpeed);
+
+        for( int i = 0; i < tail.Count; i++ )
+        {
+            var step = this.velocity.magnitude * Time.deltaTime;
+            if( i == 0)
+            {
+                if((tail[i].transform.position - this.transform.position).magnitude > tailSpacing)
+                {
+                    tail[i].transform.position = Vector3.MoveTowards(tail[i].transform.position, this.transform.position, step);
+                }
+            }
+            else
+            {
+                if((tail[i].transform.position - tail[i - 1].transform.position).magnitude > tailSpacing)
+                {
+                    tail[i].transform.position = Vector3.MoveTowards(tail[i].transform.position, tail[i - 1].transform.position, step);
+                }
+            }
+        }
     }
 
     Vector3 CalculateAcceleration()

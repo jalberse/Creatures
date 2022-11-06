@@ -15,6 +15,8 @@ public class FlockManager : MonoBehaviour
     public Vector3 boidSpawnLimitsMax = new Vector3(7, 12, 18);
     public Texture2D boidTexture;
 
+    public uint tailLength;
+
     [Header ("Boid Settings")]
     [Range(0.0f, 5.0f)]
     public float minSpeed;
@@ -37,10 +39,6 @@ public class FlockManager : MonoBehaviour
         boidCards = new GameObject[numBoids * 3];
         for(int i = 0; i < numBoids; i++)
         {
-            // TODO because sprites will render one in front of the other rather than intersecting, we need to change to quads.
-            //  So we'll have a quad, a material that's just blank, assign that material to the quad, and apply a texture from 
-            // LoadTexture(string FilePath) to that material, and then yea.
-
             Vector3 pos = this.transform.position + new Vector3
                 (
                 Random.Range(boidSpawnLimitsMin.x, boidSpawnLimitsMax.x),
@@ -50,6 +48,12 @@ public class FlockManager : MonoBehaviour
             boids[i] = Instantiate(boidPrefab, pos, Quaternion.identity);
             boids[i].GetComponent<MeshRenderer>().material.mainTexture = boidTexture;
             boids[i].GetComponent<Flock>().FM = this;
+            for (int j = 0; j < tailLength; j++)
+            {
+                GameObject tailNode = Instantiate(boidCardPrefab, boids[i].transform.position, Quaternion.identity);
+                tailNode.GetComponent<MeshRenderer>().material.mainTexture = boidTexture;
+                boids[i].GetComponent<Flock>().tail.Add(tailNode);
+            }
 
             boidCards[i] = Instantiate(boidCardPrefab, pos, Quaternion.identity);
             Vector3 position = boidCards[i].GetComponent<Renderer>().bounds.center;
@@ -68,6 +72,7 @@ public class FlockManager : MonoBehaviour
             boidCards[i + numBoids * 2].transform.RotateAround(position, Vector3.up, 270);
             boidCards[i + numBoids * 2].transform.parent = boids[i].transform;
             boidCards[i + numBoids * 2].GetComponent<MeshRenderer>().material.mainTexture = boidTexture;
+
         }
     }
 
