@@ -4,12 +4,11 @@ using UnityEngine;
 
 public class Flock : MonoBehaviour
 {
-    public GameObject boidCardPrefab;
     public float turnSpeed = .01f;
+    public float tailSpacing = 0.4f;
     public FlockManager FM;
     Vector3 velocity;
     public List<GameObject> tail;
-    public float tailSpacing = 0.05f;
 
     // Start is called before the first frame update
     void Start()
