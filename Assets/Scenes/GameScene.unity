@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 480359150}
-  m_IndirectSpecularColor: {r: 0.6473171, g: 0.5697242, b: 0.55725914, a: 1}
+  m_IndirectSpecularColor: {r: 0.64401823, g: 0.5686504, b: 0.54560393, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -230,6 +230,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5023e1f3a44599d4693a349764768ad3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  treeSpawnLimitsMin: {x: -7, y: 1.8, z: 5}
+  treeSpawnLimitsMax: {x: 7, y: 1.9, z: 30}
 --- !u!4 &242390117
 Transform:
   m_ObjectHideFlags: 0
@@ -362,14 +364,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 480359149}
-  m_LocalRotation: {x: 0.47593048, y: -0.6066709, z: -0.009769121, w: 0.63666725}
+  m_LocalRotation: {x: 0.3069372, y: -0.15268733, z: -0.07915896, w: 0.93606097}
   m_LocalPosition: {x: 6.85, y: 12.39, z: 7.45}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: 36.453, y: -103.599, z: -47.172}
+  m_LocalEulerAnglesHint: {x: 33.398, y: -23.615, z: -16.845}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
