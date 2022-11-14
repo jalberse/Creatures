@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System;
 using System.IO;
 using UnityEngine;
+using System.Collections.Concurrent;
 
 enum Creature
 {
@@ -21,7 +22,7 @@ public class CreatureSpawner : MonoBehaviour
     // However, running it with the built executable on Windows is <path to executablename_Data folder>/InputImages
     // See https://docs.unity3d.com/ScriptReference/Application-dataPath.html for locations on other platforms.
     private string folderToWatch;
-    private Queue<string> newOrUpdatedFiles;
+    private ConcurrentQueue<string> newOrUpdatedFiles;
 
     private System.Random random;
 
@@ -29,7 +30,7 @@ public class CreatureSpawner : MonoBehaviour
     void Start()
     {
         random = new System.Random();
-        newOrUpdatedFiles = new Queue<string>();
+        newOrUpdatedFiles = new ConcurrentQueue<string>();
 
         folderToWatch = Path.Combine(Application.dataPath, "InputImages");
         
@@ -49,7 +50,8 @@ public class CreatureSpawner : MonoBehaviour
             var randomIndex = this.random.Next(creatureTypes.Length);
             var creatureType = (Creature)creatureTypes.GetValue(randomIndex);
 
-            string newFilePath = newOrUpdatedFiles.Dequeue();
+            string newFilePath = null;
+            newOrUpdatedFiles.TryDequeue(out newFilePath);
             Texture2D texture = IMG2Sprite.instance.LoadTexture(newFilePath);
 
             switch (creatureType) {
