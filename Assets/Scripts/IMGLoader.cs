@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.IO;
+using System.Collections.Generic;
 
 public class IMGLoader : MonoBehaviour
 {
@@ -48,5 +49,26 @@ public class IMGLoader : MonoBehaviour
                 return Tex2D;                 // If data = readable -> return texture
         }
         return null;                     // Return null if load failed
+    }
+
+
+    public List<Texture2D> LoadGif(string FilePath)
+    {
+        byte[] data = File.ReadAllBytes(FilePath);
+        List<Texture2D> textures = new List<Texture2D>();
+
+        using (var decoder = new MG.GIF.Decoder(data))
+        {
+            var img = decoder.NextImage();
+
+            while (img != null)
+            {
+                Texture2D tex = img.CreateTexture();
+                textures.Add(tex);
+
+                img = decoder.NextImage();
+            }
+        }
+        return textures;
     }
 }
