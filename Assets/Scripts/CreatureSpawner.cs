@@ -52,7 +52,7 @@ public class CreatureSpawner : MonoBehaviour
 
             string newFilePath = null;
             newOrUpdatedFiles.TryDequeue(out newFilePath);
-            Texture2D texture = IMG2Sprite.instance.LoadTexture(newFilePath);
+            Texture2D texture = IMGLoader.instance.LoadTexture(newFilePath);
 
             switch (creatureType) {
                 case Creature.Tree:

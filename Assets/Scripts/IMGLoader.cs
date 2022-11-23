@@ -2,17 +2,17 @@ using UnityEngine;
 using System.Collections;
 using System.IO;
 
-public class IMG2Sprite : MonoBehaviour
+public class IMGLoader : MonoBehaviour
 {
     // This script loads a PNG or JPEG image from disk and returns it as a Sprite
     // Drop it on any GameObject/Camera in your scene (singleton implementation)
     //
     // Usage from any other script:
-    // MySprite = IMG2Sprite.instance.LoadNewSprite(FilePath, [PixelsPerUnit (optional)])
+    // MySprite = IMGLoader.instance.LoadNewSprite(FilePath, [PixelsPerUnit (optional)])
 
-    private static IMG2Sprite _instance;
+    private static IMGLoader _instance;
 
-    public static IMG2Sprite instance
+    public static IMGLoader instance
     {
         get
         {
@@ -20,7 +20,7 @@ public class IMG2Sprite : MonoBehaviour
             //This will only happen the first time this reference is used.
 
             if (_instance == null)
-                _instance = GameObject.FindObjectOfType<IMG2Sprite>();
+                _instance = GameObject.FindObjectOfType<IMGLoader>();
             return _instance;
         }
     }
