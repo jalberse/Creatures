@@ -23,6 +23,7 @@ public class CreatureSpawner : MonoBehaviour
     // See https://docs.unity3d.com/ScriptReference/Application-dataPath.html for locations on other platforms.
     private string folderToWatch;
     private ConcurrentQueue<string> newOrUpdatedFiles;
+    private ConcurrentQueue<string> newOrUpdatedGifFiles;
 
     private System.Random random;
 
@@ -31,6 +32,7 @@ public class CreatureSpawner : MonoBehaviour
     {
         random = new System.Random();
         newOrUpdatedFiles = new ConcurrentQueue<string>();
+        newOrUpdatedGifFiles = new ConcurrentQueue<string>();
 
         folderToWatch = Path.Combine(Application.dataPath, "InputImages");
         
@@ -39,14 +41,46 @@ public class CreatureSpawner : MonoBehaviour
         fileSystemWatcher.Created += new FileSystemEventHandler(FileCreatedOrChanged);
         fileSystemWatcher.Changed += new FileSystemEventHandler(FileCreatedOrChanged);
         fileSystemWatcher.Filter = "*.png";
+        fileSystemWatcher.Filter = "*.gif";
     }
 
     // Update is called once per frame
     void Update()
     {
+        while (newOrUpdatedGifFiles.Count > 0)
+        {
+            Creature[] creatureTypes = new Creature[] { Creature.Boid };
+            var randomIndex = this.random.Next(creatureTypes.Length);
+            var creatureType = (Creature)creatureTypes.GetValue(randomIndex);
+
+            string newFilePath = null;
+            newOrUpdatedGifFiles.TryDequeue(out newFilePath);
+
+            List<Texture2D> textures = IMGLoader.instance.LoadGif(newFilePath);
+
+            switch (creatureType)
+            {
+                case Creature.Boid:
+                    GameObject go = new GameObject("FlockManager");
+                    FlockManager fm = go.AddComponent<FlockManager>();
+                    fm.boidPrefab = (GameObject)Resources.Load("Prefabs/Boid");
+                    fm.boidCardPrefab = (GameObject)Resources.Load("Prefabs/BoidCard");
+
+                    fm.maxSpeed = 5.0f;
+                    fm.neighbourDistance = 10.0f;
+                    fm.avoidanceFactor = 1.0f;
+                    fm.centeringFactor = 0.5f;
+                    fm.velocityMatchingFactor = 0.0f;
+                    fm.minSpeed = 0.5f;
+                    fm.tailLength = 0;
+                    fm.boidTextures = textures;
+                    break;
+            }
+        }
+
         while (newOrUpdatedFiles.Count > 0)
         {
-            var creatureTypes = Enum.GetValues(typeof(Creature));
+            Creature[] creatureTypes = new Creature[] { Creature.Snake, Creature.Tree };
             var randomIndex = this.random.Next(creatureTypes.Length);
             var creatureType = (Creature)creatureTypes.GetValue(randomIndex);
 
@@ -68,7 +102,6 @@ public class CreatureSpawner : MonoBehaviour
                         );
                     treeGo.transform.position = pos;
                     break;
-                case Creature.Boid:
                 case Creature.Snake:
                     GameObject go = new GameObject("FlockManager");
                     FlockManager fm = go.AddComponent<FlockManager>();
@@ -80,7 +113,7 @@ public class CreatureSpawner : MonoBehaviour
                     fm.avoidanceFactor = 1.0f;
                     fm.centeringFactor = 0.5f;
                     fm.velocityMatchingFactor = 0.0f;
-                    fm.boidTexture = texture;
+                    fm.boidTextures = new List<Texture2D> { texture };
 
                     switch (creatureType)
                     {
@@ -95,9 +128,6 @@ public class CreatureSpawner : MonoBehaviour
                     }
                     break;
             }
-
-            
-
         }
     }
 
@@ -105,12 +135,21 @@ public class CreatureSpawner : MonoBehaviour
     {
         if(e.FullPath.EndsWith(".png"))
         {
-            ProcessFile(e.FullPath);
+            ProcessPngFile(e.FullPath);
+        }
+        else if( e.FullPath.EndsWith(".gif"))
+        {
+            ProcessGifFile(e.FullPath);
         }
     }
 
-    private void ProcessFile(String filePath)
+    private void ProcessPngFile(String filePath)
     {
         newOrUpdatedFiles.Enqueue(filePath);
+    }
+
+    private void ProcessGifFile(String filePath)
+    {
+        newOrUpdatedGifFiles.Enqueue(filePath);
     }
 }
