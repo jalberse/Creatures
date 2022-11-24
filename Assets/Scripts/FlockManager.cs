@@ -13,7 +13,8 @@ public class FlockManager : MonoBehaviour
     public GameObject[] boidCards;
     public Vector3 boidSpawnLimitsMin = new Vector3(-7, 2, -2);
     public Vector3 boidSpawnLimitsMax = new Vector3(7, 12, 18);
-    public Texture2D boidTexture;
+    public List<Texture2D> boidTextures;
+    public float animationFps = 10.0f;
 
     public uint tailLength;
 
@@ -46,12 +47,12 @@ public class FlockManager : MonoBehaviour
                 Random.Range(boidSpawnLimitsMin.z, boidSpawnLimitsMax.z)
                 );
             boids[i] = Instantiate(boidPrefab, pos, Quaternion.identity);
-            boids[i].GetComponent<MeshRenderer>().material.mainTexture = boidTexture;
+            boids[i].GetComponent<MeshRenderer>().material.mainTexture = boidTextures[0];
             boids[i].GetComponent<Flock>().FM = this;
             for (int j = 0; j < tailLength; j++)
             {
                 GameObject tailNode = Instantiate(boidCardPrefab, boids[i].transform.position, Quaternion.identity);
-                tailNode.GetComponent<MeshRenderer>().material.mainTexture = boidTexture;
+                tailNode.GetComponent<MeshRenderer>().material.mainTexture = boidTextures[0];
                 boids[i].GetComponent<Flock>().tail.Add(tailNode);
             }
 
@@ -59,19 +60,19 @@ public class FlockManager : MonoBehaviour
             Vector3 position = boidCards[i].GetComponent<Renderer>().bounds.center;
             boidCards[i].transform.RotateAround(position, Vector3.up, 90);
             boidCards[i].transform.parent = boids[i].transform;
-            boidCards[i].GetComponent<MeshRenderer>().material.mainTexture = boidTexture;
+            boidCards[i].GetComponent<MeshRenderer>().material.mainTexture = boidTextures[0];
 
             boidCards[i + numBoids] = Instantiate(boidCardPrefab, pos, Quaternion.identity);
             position = boidCards[i + numBoids].GetComponent<Renderer>().bounds.center;
             boidCards[i + numBoids].transform.RotateAround(position, Vector3.up, 180);
             boidCards[i + numBoids].transform.parent = boids[i].transform;
-            boidCards[i + numBoids].GetComponent<MeshRenderer>().material.mainTexture = boidTexture;
+            boidCards[i + numBoids].GetComponent<MeshRenderer>().material.mainTexture = boidTextures[0];
 
             boidCards[i + numBoids * 2] = Instantiate(boidCardPrefab, pos, Quaternion.identity);
             position = boidCards[i + numBoids * 2].GetComponent<Renderer>().bounds.center;
             boidCards[i + numBoids * 2].transform.RotateAround(position, Vector3.up, 270);
             boidCards[i + numBoids * 2].transform.parent = boids[i].transform;
-            boidCards[i + numBoids * 2].GetComponent<MeshRenderer>().material.mainTexture = boidTexture;
+            boidCards[i + numBoids * 2].GetComponent<MeshRenderer>().material.mainTexture = boidTextures[0];
 
         }
     }
@@ -79,6 +80,16 @@ public class FlockManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if( boidTextures.Count > 1)
+        {
+            int animationIndex = (int)(Time.time * animationFps) % boidTextures.Count;
+            for (int i = 0; i < numBoids; i++)
+            {
+                boids[i].GetComponent<MeshRenderer>().material.mainTexture = boidTextures[animationIndex];
+                boidCards[i].GetComponent<MeshRenderer>().material.mainTexture = boidTextures[animationIndex];
+                boidCards[i + numBoids].GetComponent<MeshRenderer>().material.mainTexture = boidTextures[animationIndex];
+                boidCards[i + numBoids * 2].GetComponent<MeshRenderer>().material.mainTexture = boidTextures[animationIndex];
+            }
+        }
     }
 }
